@@ -733,25 +733,48 @@ function onCyclePoint(x, y, z) {
     case "left-tapping":
       writeBlock(mFormat.format(4)); // TAG: make sure M04 is active
       writeBlock(gFeedModeModal.format(93));
-      writeBlock(
-        gPlaneModal.format(17), gRetractModal.format(98), gAbsIncModal.format(90), gCycleModal.format(74),
-        getCommonCycle(x, y, z, cycle.retract),
-        "F" + pitchFormat.format(tool.threadPitch),
-        sOutput.format(tool.spindleRPM),
-        feedOutput.format(F)
-      );
+
+      // conditionally add dot at the end of feed value, yasnac interprets number without dot as fraction instead of integer
+      if(tool.threadPitch ===1) {
+          writeBlock(
+            gPlaneModal.format(17), gRetractModal.format(98), gAbsIncModal.format(90), gCycleModal.format(74),
+            getCommonCycle(x, y, z, cycle.retract),
+            "F" + pitchFormat.format(tool.threadPitch) + ".",
+            sOutput.format(tool.spindleRPM),
+            feedOutput.format(F)
+          );
+      } else {
+          writeBlock(
+            gPlaneModal.format(17), gRetractModal.format(98), gAbsIncModal.format(90), gCycleModal.format(74),
+            getCommonCycle(x, y, z, cycle.retract),
+            "F" + pitchFormat.format(tool.threadPitch) + ".",
+            sOutput.format(tool.spindleRPM),
+            feedOutput.format(F)
+          );
+      }
+
       writeBlock(gFeedModeModal.format(94));
       break;
     case "right-tapping":
 	  writeBlock(mFormat.format(3)); // TAG: make sure M03 is active
       writeBlock(gFeedModeModal.format(93));
 
-      writeBlock(
-        gPlaneModal.format(17), gAbsIncModal.format(90), gCycleModal.format(84), gRetractModal.format(98),
-        getCommonCycle(x, y, z, cycle.retract),
-        "F" + pitchFormat.format(tool.threadPitch),
-        sOutput.format(tool.spindleRPM)
-      );
+      // conditionally add dot at the end of feed value, yasnac interprets number without dot as fraction instead of integer
+      if(tool.threadPitch ===1) {
+          writeBlock(
+          gPlaneModal.format(17), gAbsIncModal.format(90), gCycleModal.format(84), gRetractModal.format(98),
+          getCommonCycle(x, y, z, cycle.retract),
+          "F" + pitchFormat.format(tool.threadPitch) + ".",
+          sOutput.format(tool.spindleRPM)
+        );
+      } else {
+        writeBlock(
+          gPlaneModal.format(17), gAbsIncModal.format(90), gCycleModal.format(84), gRetractModal.format(98),
+          getCommonCycle(x, y, z, cycle.retract),
+          "F" + pitchFormat.format(tool.threadPitch),
+          sOutput.format(tool.spindleRPM)
+        );
+      }
       // g94 should be added after g80, this line was moved to onCycleEnd function
     //   writeBlock(gFeedModeModal.format(94));
       break;
